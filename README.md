@@ -41,7 +41,7 @@ This project competed strongly in a university competition and achieved a top-ra
 ---
 
 ## 🌐 Live Demo
-Live demo temporarily unavailable.
+https://wethaq.free.nf
 
 ---
 
