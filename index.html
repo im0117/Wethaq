@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WETHAQ – Welcome</title>
+  <style>
+    body {
+      margin:0;
+      font-family: system-ui, Arial, "Noto Naskh Arabic", sans-serif;
+      background:#fff;
+      color:#1c1c1c;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-direction:column;
+      height:100vh;
+    }
+    .logo-img {
+      max-width: 260px;
+      width: 80%;
+      margin-bottom: 25px;
+    }
+    .actions{
+      display:grid;
+      gap:14px;
+      width: 260px;
+    }
+    .btn{
+      background:#2f4b3f;
+      color:#fff;
+      padding:12px;
+      border-radius:10px;
+      text-decoration:none;
+      font-size:16px;
+      text-align:center;
+      font-weight:600;
+      transition:0.2s;
+    }
+    .btn.secondary{
+      background:#63786f;
+    }
+    .btn:hover{ filter:brightness(1.1); }
+  </style>
+</head>
+
+<body>
+  <!-- صورة WETHAQ -->
+  <img src="wethaq.png" alt="WETHAQ Logo" class="logo-img">
+
+  <div class="actions">
+    <a class="btn" href="login.html">تسجيل الدخول / LOG IN</a>
+    <a class="btn secondary" href="signup.html">إنشاء حساب جديد / CREATE A NEW ACCOUNT</a>
+  </div>
+</body>
+</html>

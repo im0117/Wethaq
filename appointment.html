@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختيار المحامي - Wethaq</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+        <button type="button"  class="back-btn" aria-label="رجوع"onclick="window.location.href='main.php'">←</button>
+      <h2>اختر المحامي المناسب</h2>
+      <h3>Book an Appointment With a Lawyer</h3>
+    </header>
+
+    <main>
+      <div class="lawyer-card">
+        <h3>أ. خالد الحربي</h3>
+        <p>قضايا أسرية</p>
+        <span class="stars">⭐⭐⭐⭐☆</span>
+       <a href="booking.php?lawyer=خالد%20الحربي&specialty=قضايا%20أسرية" class="btn">احجز الآن</a>
+      </div>
+
+      <div class="lawyer-card">
+        <h3>أ. ناصر المطيري</h3>
+        <p>قضايا طلاق</p>
+        <span class="stars">⭐⭐⭐☆☆</span>
+        <a href="booking.php?lawyer=ناصر%20المطيري&specialty=قضايا%20طلاق" class="btn">احجز الآن</a>
+      </div>
+
+      <div class="lawyer-card">
+        <h3>أ. منى العتيبي</h3>
+        <p>قضايا اجتماعية</p>
+        <span class="stars">⭐⭐⭐⭐⭐</span>
+        <a href="booking.php?lawyer=منى%20العتيبي&specialty=قضايا%20اجتماعية" class="btn">احجز الآن</a>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

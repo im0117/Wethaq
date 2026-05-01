@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WETHAQ - My Account</title>
+  <style>
+    :root { --accent:#2d6a4f; --light:#e6f0ea; --bg:#f7f9f7; --text:#1f2a24; --muted:#7b8b82; }
+    body{font-family:"Segoe UI",Arial,sans-serif; background:var(--bg); margin:0; padding:20px; display:flex; justify-content:center; color:var(--text)}
+    .card{width:360px; background:#fff; border-radius:16px; box-shadow:0 8px 25px rgba(0,0,0,.08); padding:20px}
+    h2{margin:6px 0 16px; text-align:center; color:var(--accent)}
+    .avatar{width:90px;height:90px;border-radius:50%;background:var(--light);display:flex;align-items:center;justify-content:center;font-size:34px;color:var(--accent);margin:0 auto 10px}
+    .row{margin:10px 0;padding:10px;background:var(--light);border-radius:10px}
+    .row label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+    .row span{font-weight:600}
+    .btn{width:100%;margin-top:14px;background:var(--accent);color:#fff;font-weight:700;padding:12px;border:none;border-radius:10px;cursor:pointer}
+    .btn:hover{opacity:.92}
+    .links{display:flex;gap:10px;margin-top:10px}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid #dcefe0}
+  </style>
+</head>
+<body>
+  <script>
+if (localStorage.getItem('wethaqIsLoggedIn') !== 'true') {
+  window.location.href = 'login.html';
+}
+</script>
+
+  <div class="card">
+    <div class="avatar" id="avatar">U</div>
+    <h2>حسابي</h2>
+
+    <div class="row">
+      <label>Full Name</label>
+      <span id="acc-name">—</span>
+    </div>
+
+    <div class="row">
+      <label>Email</label>
+      <span id="acc-email">—</span>
+    </div>
+
+    <div class="row">
+      <label>User ID</label>
+      <span id="acc-id">—</span>
+    </div>
+
+    <div class="row">
+      <label>Joined</label>
+      <span id="acc-joined">—</span>
+    </div>
+
+    <button class="btn" onclick="window.location.href='main.html'">الصفحة الرئيسية</button>
+    <div class="links">
+      <button class="btn ghost" onclick="signOut()">تسجيل الخروج</button>
+      <button class="btn ghost" onclick="deleteLocalAccount()">حذف الحساب</button>
+    </div>
+  </div>
+
+  <script>
+if (localStorage.getItem('wethaqIsLoggedIn') !== 'true') {
+  window.location.href = 'login.html';
+}
+</script>
+
+  <script>
+    // قراءة المستخدم من localStorage
+    function getUser(){
+      try { return JSON.parse(localStorage.getItem('wethaqUser') || '{}'); } catch(e){ return {}; }
+    }
+    function firstLetter(s){ s = (s || '').trim(); return s ? s.charAt(0).toUpperCase() : 'U'; }
+    function fmtDate(iso){
+      if(!iso) return '—';
+      try{
+        const d = new Date(iso);
+        return d.toLocaleDateString('en-US', { year:'numeric', month:'long' });
+      }catch{ return '—'; }
+    }
+
+    // تعبئة الواجهة
+    (function hydrate(){
+      const u = getUser();
+      document.getElementById('acc-name').textContent   = u.name  || '—';
+      document.getElementById('acc-email').textContent  = u.email || '—';
+      document.getElementById('acc-id').textContent     = u.id    || '—';
+      document.getElementById('acc-joined').textContent = fmtDate(u.joinedAt);
+      document.getElementById('avatar').textContent     = firstLetter(u.name);
+    })();
+
+    // تسجيل خروج بسيط (تجريبي — يبقي البيانات)
+    function signOut(){
+      localStorage.setItem('wethaqIsLoggedIn','false');
+      window.location.href = 'login.html';
+    }
+
+    // حذف البيانات المحلية (للاختبار فقط)
+    function deleteLocalAccount(){
+      if(!confirm('Delete local saved data? This is not server-side.')) return;
+      localStorage.removeItem('wethaqUser');
+      localStorage.setItem('wethaqIsLoggedIn','false');
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>

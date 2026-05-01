@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>وثاق — المحادثة مع المساعد القانوني</title>
+  <style>
+    :root{--accent:#2d6a4f;--muted:#6f7f76;--radius:14px;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+    body{background:#fff;margin:0;display:flex;justify-content:center;padding:20px}
+    .screen{width:360px;background:#fff;border-radius:12px;border:1px solid #eef3ee;box-shadow:0 8px 30px rgba(0,0,0,0.05);overflow:hidden}
+    header{padding:12px 14px;border-bottom:1px solid #f0f6f0;display:flex;align-items:center;gap:10px}
+    .back{font-size:20px;color:var(--accent);text-decoration:none}
+    .title{flex:1;text-align:center;font-weight:700;color:var(--accent)}
+
+    .chat-area{height:520px;padding:18px;box-sizing:border-box;position:relative;background:#fff}
+    .bubbles{height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;padding-bottom:56px}
+    .bubble{max-width:78%;padding:10px 12px;border-radius:12px;border:2px solid var(--accent);background:transparent;font-size:14px;line-height:1.4;word-wrap:break-word}
+    .bubble.bot{align-self:flex-start;border-left-width:8px;border-radius:12px 12px 12px 4px}
+    .bubble.user{align-self:flex-end;background:var(--accent);color:#fff;border:0;border-radius:12px 12px 4px 12px}
+
+    .typing{align-self:flex-start;font-size:13px;color:var(--muted)}
+    .input-bar{position:absolute;left:18px;right:18px;bottom:18px;background:#f5f9f5;border-radius:12px;padding:8px 10px;display:flex;align-items:center;gap:8px}
+    .robot{width:28px;height:28px;border-radius:6px;background:#eaf7ec;display:flex;align-items:center;justify-content:center;font-size:16px}
+    .text-input{flex:1;border:0;background:transparent;outline:none;font-size:14px;color:#444}
+    .send{background:var(--accent);color:#fff;padding:6px 10px;border-radius:8px;border:none;cursor:pointer;font-weight:600;opacity:.85}
+    .send:disabled{opacity:.5;cursor:not-allowed}
+
+    @media (max-width:380px){.screen{width:92vw}}
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <header>
+      <!-- غيّري href لاسم صفحتك الرئيسية (مثلاً index.html أو home.html) -->
+      <a class="back" id="back" href="/wethaq/main.php" aria-label="رجوع">◀</a>
+      <div class="title">مساعد الذكاء الاصطناعي القانوني</div>
+      <div style="width:30px" aria-hidden="true"></div>
+    </header>
+
+    <section class="chat-area" id="chat-area">
+      <div class="bubbles" id="bubbles">
+        <div class="bubble bot">مرحباً 👋 كيف أقدر أساعدك؟</div>
+      </div>
+
+      <div class="input-bar" id="input-bar">
+        <div class="robot" aria-hidden="true">🤖</div>
+        <input id="message" class="text-input" placeholder="استشارة عن الطلاق، عقد بيع، مشكلة في العمل..." aria-label="اكتب رسالتك">
+        <button id="send" class="send" type="button" disabled>إرسال</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const bubbles = document.getElementById('bubbles');
+    const messageInput = document.getElementById('message');
+    const sendBtn = document.getElementById('send');
+
+    const STORAGE_KEY = 'wethaq_chat_history';
+
+    function scrollToBottom(){
+      bubbles.scrollTop = bubbles.scrollHeight;
+    }
+
+    function makeBubble(text, who){
+      const el = document.createElement('div');
+      el.className = 'bubble ' + (who === 'bot' ? 'bot' : 'user');
+      el.textContent = text;
+      return el;
+    }
+
+    function addUserMessage(text){
+      const b = makeBubble(text, 'user');
+      bubbles.appendChild(b);
+      saveHistory();
+      scrollToBottom();
+    }
+
+    function addBotMessage(text){
+      const b = makeBubble(text, 'bot');
+      bubbles.appendChild(b);
+      saveHistory();
+      scrollToBottom();
+    }
+
+    function showTyping(){
+      const t = document.createElement('div');
+      t.className = 'typing';
+      t.textContent = 'المساعد يكتب…';
+      bubbles.appendChild(t);
+      scrollToBottom();
+      return t;
+    }
+
+    function simulateAIReply(userText){
+      let reply = "آسف، هذه نسخة تجريبية. اربطيها بباك-إند الذكاء الاصطناعي للردود الحقيقية.";
+      if(userText.includes('طلاق')) reply = 'بالنسبة لقضايا الطلاق: تحتاجين عقد الزواج، الهوية، وأي مستندات إثبات ذات صلة.';
+      else if(userText.includes('عقد')) reply = 'في العقود: أقدر أراجع البنود الجوهرية وأوضح المخاطر والتزامات الطرفين.';
+      else if(userText.includes('عمل')) reply = 'في مشاكل العمل: أعطني ملخص الوقائع والتواريخ والعقود لنقترح الحلول المناسبة.';
+
+      const typing = showTyping();
+      setTimeout(()=>{
+        typing.remove();
+        addBotMessage(reply);
+      }, 800);
+    }
+
+    function send(){
+      const text = messageInput.value.trim();
+      if(!text) return;
+      addUserMessage(text);
+      messageInput.value = '';
+      sendBtn.disabled = true;
+      setTimeout(()=> simulateAIReply(text), 250);
+    }
+
+    // حفظ/استرجاع المحادثة
+    function saveHistory(){
+      const items = [...bubbles.querySelectorAll('.bubble')].map(b => ({
+        who: b.classList.contains('user') ? 'user' : 'bot',
+        text: b.textContent
+      }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function loadHistory(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      try{
+        const items = JSON.parse(raw);
+        bubbles.innerHTML = '';
+        items.forEach(it => bubbles.appendChild(makeBubble(it.text, it.who)));
+      }catch(e){}
+    }
+
+    // أحداث الإدخال/الإرسال
+    sendBtn.addEventListener('click', send);
+    messageInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); send(); }});
+    messageInput.addEventListener('input', ()=>{ sendBtn.disabled = messageInput.value.trim().length === 0; });
+
+    // منع خلفية الصفحة من التحرك على الجوال عند السحب داخل الرسائل
+    bubbles.addEventListener('touchmove', (e)=>{ e.stopPropagation(); }, {passive:true});
+
+    // تهيئة
+    loadHistory();
+    // إذا ما في تاريخ سابق، أضف رسالة الترحيب الافتراضية
+    if(bubbles.querySelectorAll('.bubble').length === 0){
+      addBotMessage('مرحباً 👋 كيف أقدر أساعدك؟');
+    }
+    scrollToBottom();
+  </script>
+</body>
+</html>
